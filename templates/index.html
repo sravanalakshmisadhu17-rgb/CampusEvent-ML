@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusConnect | Event Recommendations</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">Campus<span>Connect</span></a>
+    <span class="top-label">SMART CAMPUS EVENTS</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">YOUR CAMPUS, YOUR INTERESTS</p>
+        <h1>Find events that<br><span>fit your future.</span></h1>
+        <p class="intro">Discover workshops, competitions, tech talks and campus activities picked for your interests.</p>
+      </div>
+      <div class="hero-symbol" aria-hidden="true">✦</div>
+    </section>
+
+    <section class="search-panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">PERSONALISE YOUR FEED</p>
+          <h2>What are you interested in?</h2>
+        </div>
+        <span class="step">01 / DISCOVER</span>
+      </div>
+      <form method="POST" action="/">
+        <label for="interests">Your interests <span class="required">*</span></label>
+        <input id="interests" name="interests" type="text" required
+          placeholder="e.g. machine learning, Python, web development, design"
+          value="{{ form_data.interests }}">
+        <div class="filters">
+          <div>
+            <label for="department">Department</label>
+            <select id="department" name="department">
+              {% for item in ["Any", "AI&DS", "CSE", "ECE", "EEE"] %}
+              <option value="{{ item }}" {% if form_data.department == item %}selected{% endif %}>{{ item }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="year">Year of study</label>
+            <select id="year" name="year">
+              {% for item in ["Any", "1st", "2nd", "3rd", "4th"] %}
+              <option value="{{ item }}" {% if form_data.year == item %}selected{% endif %}>{{ item }} year</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="event_type">Event type</label>
+            <select id="event_type" name="event_type">
+              {% for item in ["Any", "Workshop", "Competition", "Seminar", "Exhibition", "Networking", "Club"] %}
+              <option value="{{ item }}" {% if form_data.event_type == item %}selected{% endif %}>{{ item }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <button type="submit">Find my events <span>→</span></button>
+      </form>
+    </section>
+
+    {% if submitted %}
+    <section class="results" id="results">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR PERSONAL PICKS</p>
+          <h2>Recommended for you</h2>
+        </div>
+        <span class="result-count">{{ recommendations|length }} EVENTS</span>
+      </div>
+      {% if recommendations %}
+      <div class="event-grid">
+        {% for event in recommendations %}
+        <article class="event-card">
+          <div class="card-top">
+            <span class="category">{{ event.category }}</span>
+            <span class="match">{{ event.match_percent }}% match</span>
+          </div>
+          <h3>{{ event.title }}</h3>
+          <p class="description">{{ event.description }}</p>
+          <div class="event-meta">
+            <p><span>▦</span> {{ event.date }} · {{ event.time }}</p>
+            <p><span>⌖</span> {{ event.location }}</p>
+          </div>
+          <div class="skills"><strong>Explore:</strong> {{ event.skills }}</div>
+        </article>
+        {% endfor %}
+      </div>
+      <p class="note">Match scores are estimates based on text similarity and your selected preferences, not guaranteed attendance or event suitability.</p>
+      {% else %}
+      <div class="empty-state">Please enter at least one interest to get recommendations.</div>
+      {% endif %}
+    </section>
+    {% else %}
+    <section class="how-it-works">
+      <p class="eyebrow">HOW IT WORKS</p>
+      <div class="how-grid">
+        <div><span class="number">01</span><h3>Share interests</h3><p>Tell us what you want to learn or explore.</p></div>
+        <div><span class="number">02</span><h3>ML finds matches</h3><p>Text similarity ranks events against your profile.</p></div>
+        <div><span class="number">03</span><h3>Explore your picks</h3><p>See the events most relevant to you.</p></div>
+      </div>
+    </section>
+    {% endif %}
+  </main>
+  <footer>CampusConnect <span>·</span> Machine Learning Project</footer>
+</body>
+</html>
